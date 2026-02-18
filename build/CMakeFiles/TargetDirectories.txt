@@ -1,0 +1,5 @@
+/Users/chetan/SlideApp/build/CMakeFiles/SlideApp.dir
+/Users/chetan/SlideApp/build/CMakeFiles/edit_cache.dir
+/Users/chetan/SlideApp/build/CMakeFiles/rebuild_cache.dir
+/Users/chetan/SlideApp/build/CMakeFiles/SlideApp_autogen_timestamp_deps.dir
+/Users/chetan/SlideApp/build/CMakeFiles/SlideApp_autogen.dir

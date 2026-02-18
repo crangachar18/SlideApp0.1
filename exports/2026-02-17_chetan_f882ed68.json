@@ -1,0 +1,42 @@
+{
+  "slides": [
+    {
+      "planned_use": "",
+      "primary_mm": "MM1",
+      "primary_set": "PHH3, onecut1 B1, onecut1 G10",
+      "secondary_mm": "SMM2",
+      "secondary_set": "A488:Goat anti-Rabbit AF488, Cy3:Goat anti-Mouse IgG1 Cy3, A647:Goat anti-Mouse IgG2a AF647",
+      "slide_id": "G1-S1",
+      "storage_location": "4c refrigerator"
+    },
+    {
+      "planned_use": "",
+      "primary_mm": "MM2",
+      "primary_set": "Bgal-chick, onecut1 B1, onecut1 G10",
+      "secondary_mm": "SMM1",
+      "secondary_set": "A488:Goat anti-Chick AF488, Cy3:Goat anti-Mouse IgG1 Cy3, A647:Goat anti-Mouse IgG2a AF647",
+      "slide_id": "G1-S2",
+      "storage_location": "4c refrigerator"
+    },
+    {
+      "planned_use": "",
+      "primary_mm": "MM3",
+      "primary_set": "PHH3, onecut1 B1, pax6 - s",
+      "secondary_mm": "SMM2",
+      "secondary_set": "A488:Goat anti-Rabbit AF488, Cy3:Goat anti-Mouse IgG1 Cy3, A647:Goat anti-Mouse IgG2a AF647",
+      "slide_id": "G2-S1",
+      "storage_location": "4c refrigerator"
+    },
+    {
+      "planned_use": "",
+      "primary_mm": "MM4",
+      "primary_set": "Bgal-chick, onecut1 B1, pax6 - s",
+      "secondary_mm": "SMM1",
+      "secondary_set": "A488:Goat anti-Chick AF488, Cy3:Goat anti-Mouse IgG1 Cy3, A647:Goat anti-Mouse IgG2a AF647",
+      "slide_id": "G2-S2",
+      "storage_location": "4c refrigerator"
+    }
+  ],
+  "stage": "final_slide_book",
+  "username": "chetan"
+}
