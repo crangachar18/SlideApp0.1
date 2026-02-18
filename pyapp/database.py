@@ -2,16 +2,55 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import secrets
+import shutil
 import sqlite3
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-DB_PATH = Path(__file__).resolve().parents[1] / "db" / "slideapp.db"
+APP_NAME = "SlideApp"
+SOURCE_ROOT = Path(__file__).resolve().parents[1]
 PBKDF2_ROUNDS = 120_000
-EXPORTS_DIR = Path(__file__).resolve().parents[1] / "exports"
+
+
+def _default_data_dir() -> Path:
+    env_dir = os.environ.get("SLIDEAPP_DATA_DIR", "").strip()
+    if env_dir:
+        return Path(env_dir).expanduser()
+
+    # macOS default for distributable app data.
+    if os.name == "posix" and "darwin" in os.uname().sysname.lower():
+        return Path.home() / "Library" / "Application Support" / APP_NAME
+
+    # Generic fallback for non-mac platforms.
+    return Path.home() / ".local" / "share" / APP_NAME
+
+
+DATA_DIR = _default_data_dir()
+DB_PATH = DATA_DIR / "slideapp.db"
+EXPORTS_DIR = DATA_DIR / "exports"
+
+LEGACY_DB_PATH = SOURCE_ROOT / "db" / "slideapp.db"
+LEGACY_EXPORTS_DIR = SOURCE_ROOT / "exports"
+
+
+def _migrate_legacy_data_if_needed() -> None:
+    if DB_PATH.exists():
+        return
+
+    if LEGACY_DB_PATH.exists():
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(LEGACY_DB_PATH, DB_PATH)
+
+    if LEGACY_EXPORTS_DIR.exists():
+        EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
+        for src in LEGACY_EXPORTS_DIR.glob("*.json"):
+            dst = EXPORTS_DIR / src.name
+            if not dst.exists():
+                shutil.copy2(src, dst)
 
 
 def _hash_password(password: str, salt_hex: str) -> str:
@@ -21,6 +60,7 @@ def _hash_password(password: str, salt_hex: str) -> str:
 
 
 def init_auth_db() -> None:
+    _migrate_legacy_data_if_needed()
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -5,7 +5,7 @@ a = Analysis(
     ['pyapp/main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('pyapp/generate-tree.png', 'pyapp'), ('pyapp/primaries - Sheet1.csv', 'pyapp'), ('pyapp/secondaries - Sheet1.csv', 'pyapp')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
