@@ -21,6 +21,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from pyapp.runtime_paths import find_resource
 from pyapp.tree_canvas_window import TreeCanvasWindow
 
 
@@ -447,13 +448,14 @@ class ExperimentSetupWindow(QMainWindow):
         if self.generate_tree_button is None:
             return
 
-        candidates = [
-            Path(__file__).resolve().parent / "generate-tree.png",
-            Path(__file__).resolve().parent / "generate_tree.png",
-            Path(__file__).resolve().parents[1] / "assets" / "generate-tree.png",
-            Path(__file__).resolve().parents[1] / "assets" / "generate_tree.png",
-        ]
-        icon_path = next((path for path in candidates if path.exists()), None)
+        icon_path = find_resource(
+            "pyapp/generate-tree.png",
+            "pyapp/generate_tree.png",
+            "generate-tree.png",
+            "generate_tree.png",
+            "assets/generate-tree.png",
+            "assets/generate_tree.png",
+        )
         if icon_path is None:
             return
 

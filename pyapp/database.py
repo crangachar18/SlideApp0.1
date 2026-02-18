@@ -10,6 +10,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+import sys
 
 APP_NAME = "SlideApp"
 SOURCE_ROOT = Path(__file__).resolve().parents[1]
@@ -51,6 +52,96 @@ def _migrate_legacy_data_if_needed() -> None:
             dst = EXPORTS_DIR / src.name
             if not dst.exists():
                 shutil.copy2(src, dst)
+
+
+def _likely_external_exports_dir() -> Path | None:
+    if not getattr(sys, "frozen", False):
+        return None
+    exe = Path(sys.executable).resolve()
+    # .../<project>/dist/SlideAppBeta.app/Contents/MacOS/SlideAppBeta
+    # Want .../<project>/exports
+    try:
+        project_root = exe.parent.parent.parent.parent.parent
+    except IndexError:
+        return None
+    candidate = project_root / "exports"
+    return candidate if candidate.exists() else None
+
+
+def _import_export_jsons_into_runs_if_empty(conn: sqlite3.Connection) -> None:
+    run_count = conn.execute("SELECT COUNT(*) FROM experiment_runs").fetchone()[0]
+    if int(run_count) > 0:
+        return
+
+    export_dirs: list[Path] = [EXPORTS_DIR, LEGACY_EXPORTS_DIR]
+    external = _likely_external_exports_dir()
+    if external is not None:
+        export_dirs.append(external)
+
+    seen_content: set[str] = set()
+    for export_dir in export_dirs:
+        if not export_dir.exists():
+            continue
+        for src in sorted(export_dir.glob("*.json")):
+            try:
+                payload_text = src.read_text(encoding="utf-8")
+                payload = json.loads(payload_text)
+            except Exception:
+                continue
+            if not isinstance(payload, dict):
+                continue
+
+            username = str(payload.get("username", "")).strip() or "unknown_user"
+            if username == "unknown_user":
+                continue
+
+            # Ensure FK user exists for imported historical exports.
+            user_row = conn.execute(
+                "SELECT username FROM app_users WHERE username = ?",
+                (username,),
+            ).fetchone()
+            if user_row is None:
+                salt_hex = secrets.token_hex(16)
+                password_hash = _hash_password("temporary", salt_hex)
+                conn.execute(
+                    """
+                    INSERT INTO app_users (username, role, password_salt, password_hash)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    (username, "researcher", salt_hex, password_hash),
+                )
+
+            # Prevent duplicate inserts when scanning multiple directories.
+            content_key = payload_text.strip()
+            if content_key in seen_content:
+                continue
+            seen_content.add(content_key)
+
+            created_at = datetime.now(timezone.utc).isoformat()
+            stem = src.stem
+            parts = stem.split("_")
+            run_id = parts[-1] if parts else uuid.uuid4().hex[:8]
+            if not run_id:
+                run_id = uuid.uuid4().hex[:8]
+            run_id = run_id.replace("-", "")
+            if len(run_id) < 8:
+                run_id = f"{run_id}{uuid.uuid4().hex[:8-len(run_id)]}"
+
+            # Ensure unique key.
+            exists = conn.execute(
+                "SELECT run_id FROM experiment_runs WHERE run_id = ?",
+                (run_id,),
+            ).fetchone()
+            if exists is not None:
+                run_id = uuid.uuid4().hex
+
+            conn.execute(
+                """
+                INSERT INTO experiment_runs (run_id, username, created_at, payload_json)
+                VALUES (?, ?, ?, ?)
+                """,
+                (run_id, username, created_at, payload_text),
+            )
 
 
 def _hash_password(password: str, salt_hex: str) -> str:
@@ -116,6 +207,7 @@ def init_auth_db() -> None:
                 ("chetan", "admin", salt_hex, password_hash),
             )
 
+        _import_export_jsons_into_runs_if_empty(conn)
         conn.commit()
 
 

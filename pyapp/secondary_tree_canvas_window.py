@@ -22,6 +22,7 @@ from PySide6.QtWidgets import (
 )
 
 from pyapp.antibody_rules import PrimaryAntibody
+from pyapp.runtime_paths import find_resource
 from pyapp.secondary_rules import (
     SecondaryAntibody,
     load_secondaries,
@@ -84,14 +85,14 @@ class SecondaryTreeCanvasWindow(QMainWindow):
         self._populate_table()
 
     def _load_secondaries(self) -> list[SecondaryAntibody]:
-        root = Path(__file__).resolve().parent
-        candidates = [
-            root / "secondaries.csv",
-            root / "secondaries - Sheet1.csv",
-        ]
-        for c in candidates:
-            if c.exists():
-                return load_secondaries(c)
+        csv_path = find_resource(
+            "pyapp/secondaries.csv",
+            "pyapp/secondaries - Sheet1.csv",
+            "secondaries.csv",
+            "secondaries - Sheet1.csv",
+        )
+        if csv_path is not None:
+            return load_secondaries(csv_path)
         return []
 
     def _build_ui(self) -> None:

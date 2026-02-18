@@ -27,6 +27,7 @@ from pyapp.antibody_rules import (
     load_primaries,
 )
 from pyapp.master_mix_window import MasterMixDefinition, MasterMixWindow
+from pyapp.runtime_paths import find_resource
 from pyapp.secondary_tree_canvas_window import SecondaryTreeCanvasWindow
 
 
@@ -100,14 +101,14 @@ class TreeCanvasWindow(QMainWindow):
         self._populate_table()
 
     def _load_antibodies(self) -> list[PrimaryAntibody]:
-        root = Path(__file__).resolve().parent
-        candidates = [
-            root / "primaries.csv",
-            root / "primaries - Sheet1.csv",
-        ]
-        for c in candidates:
-            if c.exists():
-                return load_primaries(c)
+        csv_path = find_resource(
+            "pyapp/primaries.csv",
+            "pyapp/primaries - Sheet1.csv",
+            "primaries.csv",
+            "primaries - Sheet1.csv",
+        )
+        if csv_path is not None:
+            return load_primaries(csv_path)
         return []
 
     def _build_ui(self) -> None:

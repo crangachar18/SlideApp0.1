@@ -390,11 +390,23 @@
 		</data>
 		<key>Resources/base_library.zip</key>
 		<data>
-		p+HVtLUVep5asmzVT9BxrgYctnM=
+		c7fFbn4RK/iogYsGmcqw8dDNTKQ=
 		</data>
 		<key>Resources/icon-windowed.icns</key>
 		<data>
 		eEHOuYpZLB0vKGVIWGZOh5rH8+o=
+		</data>
+		<key>Resources/pyapp/generate-tree.png</key>
+		<data>
+		DDza0aXZjxRNIGfHG9hivK/PkbI=
+		</data>
+		<key>Resources/pyapp/primaries - Sheet1.csv</key>
+		<data>
+		//L2uIZqlDhwYIBYkurR/5tNECU=
+		</data>
+		<key>Resources/pyapp/secondaries - Sheet1.csv</key>
+		<data>
+		Q+4aY83zwHbWR14In7ezj2DpmQw=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -1006,6 +1018,11 @@
 			</data>
 			<key>requirement</key>
 			<string>cdhash H"5bbfe27a14eed5cc34ce50583e2af77b50c4f58c"</string>
+		</dict>
+		<key>Frameworks/pyapp</key>
+		<dict>
+			<key>symlink</key>
+			<string>../Resources/pyapp</string>
 		</dict>
 		<key>Frameworks/python3.13</key>
 		<dict>
@@ -2244,7 +2261,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Bv+xykJDfp9nGUY/Ld4kixtDubbW8xpJjP5oBk/QKdM=
+			juOvqj5dbLNeoQWDxU62g11AJsoS6M6+zDwLy3JYIBA=
 			</data>
 		</dict>
 		<key>Resources/icon-windowed.icns</key>
@@ -2328,6 +2345,27 @@
 		<dict>
 			<key>symlink</key>
 			<string>../Frameworks/libz.1.dylib</string>
+		</dict>
+		<key>Resources/pyapp/generate-tree.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			7apBz/guD/6n/OMTt18e9yJVtjvmr+PYGnRTcN4u60o=
+			</data>
+		</dict>
+		<key>Resources/pyapp/primaries - Sheet1.csv</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			i/83UNRKSEmTpgRWvxMVhif1YBegnIsCVk7MYlDcTB0=
+			</data>
+		</dict>
+		<key>Resources/pyapp/secondaries - Sheet1.csv</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			DxBIsjoNAIkmQO+9maoDis71QEPDAFWepWbndpuYFAY=
+			</data>
 		</dict>
 		<key>Resources/python3.13</key>
 		<dict>
